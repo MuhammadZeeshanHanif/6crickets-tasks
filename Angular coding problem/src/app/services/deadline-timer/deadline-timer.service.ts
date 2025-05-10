@@ -1,7 +1,7 @@
 // This service fetches the remaining seconds to a deadline from an API.
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
-import { Observable, throwError } from 'rxjs';
+import { observable, Observable, of, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 
 @Injectable({
@@ -17,9 +17,9 @@ export class DeadlineTimerService {
    * @returns Observable with the seconds left.
    */
   getSecondsLeft(): Observable<{ secondsLeft: number }> {
-    return this.http.get<{ secondsLeft: number }>(this.apiUrl).pipe(
-      catchError(this.handleError)
-    );
+     // Mock response (e.g., 1 hour = 3600 seconds)
+    const mockResponse = { secondsLeft: 15 };
+    return of(mockResponse);
   }
 
   /**
