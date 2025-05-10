@@ -11,7 +11,7 @@ import { DeadlineTimerService } from 'src/app/services/deadline-timer/deadline-t
 export class DeadlineTimerComponent implements OnInit, OnDestroy {
   secondsLeft$: Observable<number>;
   private initialSecondsSubject = new BehaviorSubject<number>(0);
-  private destroy$ = new Subject<void>();
+  private destroySubj$ = new Subject<void>();
 
   constructor(private deadlineTimerService: DeadlineTimerService) {
     // Initialize secondsLeft$ as an observable that updates every second
@@ -19,16 +19,23 @@ export class DeadlineTimerComponent implements OnInit, OnDestroy {
       switchMap(initialSeconds =>
         interval(1000).pipe(
           map(tick => Math.max(0, initialSeconds - tick)),
-          takeUntil(this.destroy$)
+          takeUntil(this.destroySubj$)
         )
       )
     );
   }
 
   ngOnInit(): void {
-    // Fetch initial seconds from API
+    this.fetchSecondsLeft();
+  }
+
+  /**
+   * This method is called when the component is initialized.
+   * It fetches the initial seconds left from the API.
+   */
+  fetchSecondsLeft(): void {
     this.deadlineTimerService.getSecondsLeft().pipe(
-      takeUntil(this.destroy$)
+      takeUntil(this.destroySubj$)
     ).subscribe({
       next: ({ secondsLeft }) => {
         this.initialSecondsSubject.next(secondsLeft);
@@ -39,9 +46,12 @@ export class DeadlineTimerComponent implements OnInit, OnDestroy {
     });
   }
 
+  /**
+   * This method is called when the component is destroyed.
+   * It cleans up the subscriptions to prevent memory leaks.
+   */
   ngOnDestroy(): void {
-    // Clean up subscriptions
-    this.destroy$.next();
-    this.destroy$.complete();
+    this.destroySubj$.next();
+    this.destroySubj$.complete();
   }
 }
