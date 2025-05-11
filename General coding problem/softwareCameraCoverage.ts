@@ -152,4 +152,5 @@ function check2DCoverage(distanceRange: Range, lightRange: Range, cameras: Camer
 //   { distanceRange: { min: 5, max: 25 }, lightRange: { min: 500, max: 2500 } },
 //   { distanceRange: { min: 25, max: 50 }, lightRange: { min: 2500, max: 5000 } }
 // ];
-// console.log(canSupportSoftwareCamera(softwareDistanceRange, softwareLightRange, hardwareCameras));
+// const result = canSupportSoftwareCamera(softwareDistanceRange, softwareLightRange, hardwareCameras);
+// console.log('Camera support check:', result);
